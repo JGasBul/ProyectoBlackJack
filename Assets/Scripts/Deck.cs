@@ -34,6 +34,47 @@ public class Deck : MonoBehaviour
          * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
          * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
          */
+
+        //Me hubiera gustado usar switch para un codigo mas limpio pero no me dejaba porque me decia que la caracteristica de 'patron racional no estaba disponible en esta version.'
+
+        for (int i = 0; i < values.Length; i++)
+        {   
+            if (i == 0 || i == 13 || i == 26 || i == 39)
+            {
+                values[i] = 11;
+            }
+            else if (i<10)
+            {
+                values[i] = i+1;
+            }
+            else if (i < 13)
+            {
+                values[i] = 10;
+            }
+            else if (i < 23)
+            {
+                values[i] = i-12;
+            }
+            else if(i < 26)
+            {
+                values[i] = 10;
+            }
+            else if (i < 36)
+            {
+                values[i] = i - 25;
+            }
+            else if (i < 39){
+                values[i] = 10;
+            }
+            else if (i < 48)
+            {
+                values[i] = i - 38;
+            } 
+            else
+            {
+                values[i] = 10;
+            }
+        }
     }
 
     private void ShuffleCards()
