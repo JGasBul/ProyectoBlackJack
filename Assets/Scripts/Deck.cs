@@ -35,7 +35,7 @@ public class Deck : MonoBehaviour
          * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
          */
 
-        //Me hubiera gustado usar switch para un codigo mas limpio pero no me dejaba porque me decia que la caracteristica de 'patron racional no estaba disponible en esta version.'
+        //Me hubiera gustado usar switch para un codigo mas limpio pero no me dejaba porque me decia que la caracteristica de 'patron racional' no estaba disponible en esta version.'
 
         for (int i = 0; i < values.Length; i++)
         {   
@@ -83,7 +83,22 @@ public class Deck : MonoBehaviour
          * Barajar las cartas aleatoriamente.
          * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
          * Si lo necesitas, puedes definir nuevos arrays.
-         */       
+         */
+        for (int i = 0; i < values.Length; i++)
+        {
+            var j = Random.Range(0, 52);
+            var temp_value = values[i];
+            var temp_faces = faces[i];
+
+            //Valor Random
+            values[i] = values[j];
+            values[j] = temp_value;
+
+            //Face Random
+            faces[i] = faces[j];
+            faces[j] = temp_faces;
+
+        }
     }
 
     void StartGame()
