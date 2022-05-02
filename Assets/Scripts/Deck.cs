@@ -9,23 +9,29 @@ public class Deck : MonoBehaviour
     public Button hitButton;
     public Button stickButton;
     public Button playAgainButton;
+    public Button x10Button;
+    public Button x100Button;
+    public Button x1000Button;
     public Text finalMessage;
     public Text probMessage;
     public Text pointsMessage;
     public Text dealerPointsMessage;
-
+    public Text bank;
+    public int bankValue;
+    public int apuesta;
+    public Text apuestaText;
     public int[] values = new int[52];
     int cardIndex = 0;
 
     private void Awake()
     {
         InitCardValues();
-
     }
 
     private void Start()
     {
         ShuffleCards();
+        bank.text = "Tienes " + bankValue + " €";
         StartGame();
     }
 
@@ -106,28 +112,43 @@ public class Deck : MonoBehaviour
 
     void StartGame()
     {
-        for (int i = 0; i < 2; i++)
+        if (bankValue >= 10)
         {
-            PushPlayer();
-            PushDealer();
-            /*TODO:
-             * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
-             */
-
-            pointsMessage.text = "Tienes " + player.GetComponent<CardHand>().points + " puntos";
-            /*
-            if (player.GetComponent<CardHand>().points == 21)
+            for (int i = 0; i < 2; i++)
             {
-                finalMessage.text = "HAS GANADO";
+                PushPlayer();
+                PushDealer();
                 hitButton.interactable = false;
                 stickButton.interactable = false;
-            }
+                /*TODO:
+                 * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
+                 */
 
-            else if (dealer.GetComponent<CardHand>().points == 21)
-            {
-                finalMessage.text = "HAS PERDIDO";
+                pointsMessage.text = "Tienes " + player.GetComponent<CardHand>().points + " puntos";
+                /*
+                if (player.GetComponent<CardHand>().points == 21)
+                {
+                    finalMessage.text = "HAS GANADO";
+                    hitButton.interactable = false;
+                    stickButton.interactable = false;
+                }
+
+                else if (dealer.GetComponent<CardHand>().points == 21)
+                {
+                    finalMessage.text = "HAS PERDIDO";
+                }
+                */
             }
-            */
+        }
+        else
+        {
+            finalMessage.text = "Estas sin blanca amigo. GAME OVER. Pulsa nuevo juego para rellenar la banca";
+            x10Button.interactable = false;
+            x100Button.interactable = false;
+            x1000Button.interactable = false;
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+            bankValue = 1000;
         }
     }
 
@@ -206,6 +227,45 @@ public class Deck : MonoBehaviour
         CalculateProbabilities();
     }
 
+    public void x10()
+    {
+        apuesta = 10;
+        bankValue -= apuesta;
+        bank.text = "Tienes " + bankValue + " €";
+        x10Button.interactable = false;
+        x100Button.interactable = false;
+        x1000Button.interactable = false;
+        hitButton.interactable = true;
+        stickButton.interactable = true;
+        apuestaText.text = "";
+    }
+
+    public void x100()
+    {
+        apuesta = 100;
+        bankValue -= apuesta;
+        bank.text = "Tienes " + bankValue + " €";
+        x10Button.interactable = false;
+        x100Button.interactable = false;
+        x1000Button.interactable = false;
+        hitButton.interactable = true;
+        stickButton.interactable = true;
+        apuestaText.text = "";
+    }
+
+    public void x1000()
+    {
+        apuesta = 1000;
+        bankValue -= apuesta;
+        bank.text = "Tienes " + bankValue + " €";
+        x10Button.interactable = false;
+        x100Button.interactable = false;
+        x1000Button.interactable = false;
+        hitButton.interactable = true;
+        stickButton.interactable = true;
+        apuestaText.text = "";
+    }
+
     public void Hit()
     {
         /*TODO: 
@@ -219,7 +279,7 @@ public class Deck : MonoBehaviour
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
          */
 
-        if (player.GetComponent<CardHand>().points >= 21)
+        if (player.GetComponent<CardHand>().points > 21)
         {
             finalMessage.text = "Te has pasado. HAS PERDIDO";
             hitButton.interactable = false;
@@ -254,15 +314,21 @@ public class Deck : MonoBehaviour
         }
         else if (playerPoints == 21)
         {
-            finalMessage.text = "Enhorabuena, has hecho BlackJack. Has ganado.";
+            finalMessage.text = "Enhorabuena, has hecho BlackJack. Has ganado " + (apuesta * 2).ToString() + " €";
+            bankValue += apuesta * 2;
+            bank.text = "Tienes " + bankValue + " €";
         }
         else if (dealerPoints > 21)
         {
-            finalMessage.text = "La banca se ha pasado, has ganado";
+            finalMessage.text = "La banca se ha pasado, has ganado " + (apuesta * 2).ToString()+" €";
+            bankValue += apuesta * 2;
+            bank.text = "Tienes " + bankValue + " €";
         }
         else if (dealerPoints == playerPoints)
         {
             finalMessage.text = "Habeis tenido un empate";
+            bankValue += apuesta;
+            bank.text = "Tienes " + bankValue + " €";
         }
         else if (dealerPoints > playerPoints)
         {
@@ -270,16 +336,21 @@ public class Deck : MonoBehaviour
         }
         else
         {
-            finalMessage.text = "Has ganado a la banca. Enhorabuena.";
+            finalMessage.text = "Has ganado "+(apuesta*2).ToString()+" € a la banca. Enhorabuena.";
+            bankValue += apuesta * 2;
+            bank.text = "Tienes " + bankValue + " €";
         }
     }
 
     public void PlayAgain()
     {
-        hitButton.interactable = true;
-        stickButton.interactable = true;
+        x10Button.interactable = true;
+        x100Button.interactable = true;
+        x1000Button.interactable = true;
         finalMessage.text = "";
         dealerPointsMessage.text = "";
+        apuestaText.text = "Elije una apuesta:";
+        bank.text = "Tienes " + bankValue + " €";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
         cardIndex = 0;
